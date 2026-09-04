@@ -1,0 +1,68 @@
+version: '3.8'
+
+# ==============================================================================
+# PRODUCTION DOCKER COMPOSE CONFIGURATION
+# ==============================================================================
+# Usage:
+#   docker-compose -f docker-compose.prod.yml --env-file .env up --build -d
+#
+# Production Hardening Highlights:
+# - Strict environment variable enforcement (no hardcoded password fallbacks)
+# - No source code volume mounts (immutable container images)
+# - Production Uvicorn multi-worker server without '--reload'
+# - Optimized Next.js production build and execution
+# ==============================================================================
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    # Notice: Database port is not exposed to the public host in production
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=${PROJECT_NAME}
+      - ENVIRONMENT=production
+      - SECRET_KEY=${SECRET_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    command: >
+      sh -c "npm run build &&
+             npm run start"
+
+volumes:
+  postgres_data_prod:

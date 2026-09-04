@@ -1,5 +1,14 @@
 version: '3.8'
 
+# ==============================================================================
+# LOCAL DEVELOPMENT DOCKER COMPOSE CONFIGURATION
+# ==============================================================================
+# Features:
+# - Hot code reloading enabled for backend and frontend
+# - Volume mounts for instant code syncing
+# - Default development environment variables with .env override support
+# ==============================================================================
+
 services:
   db:
     image: postgres:15
@@ -7,7 +16,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dev_postgres_password_change_in_production}
       - POSTGRES_DB=${POSTGRES_DB:-cafirm}
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
@@ -21,12 +30,15 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - PROJECT_NAME=${PROJECT_NAME:-Singh & Thakur Associates CA Platform}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - SECRET_KEY=${SECRET_KEY:-dev_secret_key_change_to_strong_random_string_in_production}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
       - POSTGRES_SERVER=db
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dev_postgres_password_change_in_production}
       - POSTGRES_DB=${POSTGRES_DB:-cafirm}
       - POSTGRES_PORT=5432
-      - PROJECT_NAME=${PROJECT_NAME:-CA Firm Platform}
     depends_on:
       - db
     command: >
@@ -40,12 +52,14 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     depends_on:
       - backend
+    command: npm run dev
 
 volumes:
   postgres_data:
