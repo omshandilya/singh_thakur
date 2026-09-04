@@ -20,7 +20,7 @@ export function Navbar() {
             </div>
             <Link href="/" className="flex items-center space-x-2">
               <span className="inline-block font-bold text-xl text-slate-900 tracking-tight">
-                {siteConfig.name.split(" ")[0]} & {siteConfig.name.split(" ")[2] || "Associates"}
+                {siteConfig.name}
               </span>
             </Link>
           </div>
