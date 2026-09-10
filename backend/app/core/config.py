@@ -1,6 +1,4 @@
-import os
 from typing import List, Optional, Union
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,10 +7,12 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     API_V1_STR: str = "/api/v1"
 
-    # Security / Auth token configurations (foundational for future phases)
+    # Security / JWT configuration
     SECRET_KEY: str = "development_secret_key_do_not_use_in_production_32bytesmin"
+    ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    PASSWORD_RESET_TOKEN_EXPIRE_MINUTES: int = 60
 
     # CORS configuration
     CORS_ORIGINS: Union[str, List[str]] = "http://localhost:3000,http://127.0.0.1:3000"
@@ -55,3 +55,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

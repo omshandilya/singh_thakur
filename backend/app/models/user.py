@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import Boolean, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -7,6 +7,7 @@ from app.db.base_class import Base, TimestampMixin
 
 if TYPE_CHECKING:
     from app.models.role import Role
+    from app.models.refresh_token import RefreshToken
 
 
 class User(Base, TimestampMixin):
@@ -59,6 +60,12 @@ class User(Base, TimestampMixin):
         "Role",
         back_populates="users",
     )
+    refresh_tokens: Mapped[List["RefreshToken"]] = relationship(
+        "RefreshToken",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         return f"<User(email='{self.email}')>"
+

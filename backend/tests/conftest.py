@@ -58,6 +58,11 @@ def db_session() -> Generator[Session, None, None]:
     connection.close()
 
 
+from app.core.security import create_access_token
+from app.services.user_service import user_service
+from app.schemas.auth import RegisterRequest
+
+
 @pytest.fixture
 def client(db_session: Session) -> Generator[TestClient, None, None]:
     """
@@ -73,3 +78,40 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def test_user(db_session: Session) -> dict:
+    """
+    Creates and returns a test user with CLIENT role.
+    """
+    email = "test.client@example.com"
+    password = "SecurePassword123"
+    
+    existing = user_service.get_by_email(db_session, email)
+    if not existing:
+        req = RegisterRequest(
+            email=email,
+            password=password,
+            full_name="Test Client",
+        )
+        existing = user_service.create_user(db_session, req, role_name=RoleEnum.CLIENT)
+        
+    return {
+        "user": existing,
+        "email": email,
+        "password": password
+    }
+
+
+@pytest.fixture
+def auth_headers(test_user: dict) -> dict:
+    """
+    Returns HTTP authorization headers for the test_user.
+    """
+    user = test_user["user"]
+    token = create_access_token(
+        subject=str(user.id),
+        role=user.role.name.value
+    )
+    return {"Authorization": f"Bearer {token}"}

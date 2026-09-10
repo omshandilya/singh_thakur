@@ -1,13 +1,16 @@
 from fastapi import APIRouter
 from app.api.endpoints import health
+from app.api.endpoints import auth
 
 api_router = APIRouter()
 
 # Health check router
 api_router.include_router(health.router, tags=["Health"])
 
+# Phase 2.1 — Authentication & RBAC
+api_router.include_router(auth.router, prefix="/auth", tags=["Auth"])
+
 # Future Phase routers will be cleanly mounted here:
-# api_router.include_router(auth.router, prefix="/auth", tags=["Auth"])
 # api_router.include_router(users.router, prefix="/users", tags=["Users"])
 # api_router.include_router(clients.router, prefix="/clients", tags=["Clients"])
 # api_router.include_router(documents.router, prefix="/documents", tags=["Documents"])
