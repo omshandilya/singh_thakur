@@ -12,6 +12,20 @@ from app.schemas.common import ErrorBody, ErrorDetail, ErrorResponse, SuccessRes
 from app.schemas.health import HealthResponse
 from app.schemas.role import RoleBase, RoleCreate, RoleResponse
 from app.schemas.user import UserBase, UserCreate, UserResponse
+from app.schemas.client import (
+    ClientResponse,
+    ClientUpdate,
+    ClientTypeEnum,
+    AssignedEmployeeResponse,
+)
+from app.schemas.document import (
+    DocumentResponse,
+    DocumentDetailResponse,
+    DocumentRequestResponse,
+    DocumentRequestCreate,
+    DocumentReviewRequest,
+    DocumentDownloadUrlResponse,
+)
 
 __all__ = [
     "ForgotPasswordRequest",
@@ -33,4 +47,14 @@ __all__ = [
     "UserBase",
     "UserCreate",
     "UserResponse",
+    "ClientResponse",
+    "ClientUpdate",
+    "ClientTypeEnum",
+    "AssignedEmployeeResponse",
+    "DocumentResponse",
+    "DocumentDetailResponse",
+    "DocumentRequestResponse",
+    "DocumentRequestCreate",
+    "DocumentReviewRequest",
+    "DocumentDownloadUrlResponse",
 ]

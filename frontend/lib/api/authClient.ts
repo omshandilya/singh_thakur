@@ -85,6 +85,7 @@ apiClient.interceptors.response.use(
     } catch (err) {
       processQueue(err, null);
       TokenStore.clear();
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       if (typeof window !== "undefined") window.location.href = "/login";
       return Promise.reject(err);
     } finally {

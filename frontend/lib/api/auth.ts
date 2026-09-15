@@ -56,7 +56,7 @@ export const ROLE_REDIRECT: Record<UserRole, string> = {
   ADMIN: "/dashboard/admin",
   CA: "/dashboard/ca",
   EMPLOYEE: "/dashboard/employee",
-  CLIENT: "/dashboard/client",
+  CLIENT: "/client/dashboard",
 };
 
 // ─── API calls ────────────────────────────────────────────────────────────────

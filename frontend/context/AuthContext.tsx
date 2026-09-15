@@ -70,7 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // On mount, restore session from localStorage
   useEffect(() => {
-    refreshUser();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void refreshUser();
   }, [refreshUser]);
 
   const login = useCallback(

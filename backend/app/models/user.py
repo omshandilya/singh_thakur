@@ -8,6 +8,7 @@ from app.db.base_class import Base, TimestampMixin
 if TYPE_CHECKING:
     from app.models.role import Role
     from app.models.refresh_token import RefreshToken
+    from app.models.client import Client
 
 
 class User(Base, TimestampMixin):
@@ -64,6 +65,13 @@ class User(Base, TimestampMixin):
         "RefreshToken",
         back_populates="user",
         cascade="all, delete-orphan",
+    )
+    client_profile: Mapped[Optional["Client"]] = relationship(
+        "Client",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        foreign_keys="Client.user_id",
     )
 
     def __repr__(self) -> str:

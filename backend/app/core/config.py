@@ -25,6 +25,17 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     DATABASE_URL: Optional[str] = None
 
+    # Storage & Document Configuration
+    STORAGE_BACKEND: str = "local"  # "local", "minio", "s3", "r2"
+    STORAGE_LOCAL_DIR: str = "storage/documents"
+    S3_ENDPOINT_URL: Optional[str] = None
+    S3_ACCESS_KEY: Optional[str] = None
+    S3_SECRET_KEY: Optional[str] = None
+    S3_BUCKET_NAME: str = "singh-thakur-documents"
+    S3_REGION: str = "us-east-1"
+    MAX_UPLOAD_SIZE_BYTES: int = 15 * 1024 * 1024  # 15 MB
+    SIGNED_URL_EXPIRE_SECONDS: int = 900  # 15 minutes
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_ignore_empty=True,
